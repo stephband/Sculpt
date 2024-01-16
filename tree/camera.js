@@ -1,11 +1,11 @@
 
-import Privates      from '../../../../fn/modules/privates.js';
-import Stream        from '../../../../fn/modules/stream.js';
-import get           from '../../../../fn/modules/get.js';
-import mix           from '../../../../fn/modules/mix.js';
-import noop          from '../../../../fn/modules/noop.js';
-import nothing       from '../../../../fn/modules/nothing.js';
-import overload      from '../../../../fn/modules/overload.js';
+import Privates      from '../../fn/modules/privates.js';
+import Stream        from '../../fn/modules/stream.js';
+import get           from '../../fn/modules/get.js';
+import mix           from '../../fn/modules/mix.js';
+import noop          from '../../fn/modules/noop.js';
+import nothing       from '../../fn/modules/nothing.js';
+import overload      from '../../fn/modules/overload.js';
 import { invertMatrix, multiplyMM, transformFromPerspective, idTransform, flipZTransform } from '../modules/matrix.js';
 import { group, groupEnd, log } from '../modules/log.js';
 import Node          from './node.js';

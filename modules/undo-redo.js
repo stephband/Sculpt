@@ -1,5 +1,5 @@
 
-import call from '../../../../fn/modules/call.js';
+import call from '../../fn/modules/call.js';
 
 const actions   = [];
 const maxLength = 12;

@@ -1,5 +1,5 @@
 
-import { ORIGIN3D } from '../../../../fn/modules/vector/consts.js';
+import { ORIGIN3D } from '../../fn/modules/vector/consts.js';
 
 const { cos, sin, tan } = Math;
 
@@ -194,7 +194,7 @@ export function translateFromTransform(transform) {
 
 // LOGGING
 
-import postpad from '../../../../fn/modules/postpad.js';
+import postpad from '../../fn/modules/postpad.js';
 const labelColor  = '#A423A9';
 const numberColor = '#ff4d86';
 

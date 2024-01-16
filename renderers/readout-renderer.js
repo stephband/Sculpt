@@ -1,5 +1,5 @@
 
-import deg from '../../../../fn/modules/to-deg.js';
+import deg from '../../fn/modules/to-deg.js';
 
 const assign = Object.assign;
 

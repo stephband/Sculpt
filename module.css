@@ -1,24 +1,24 @@
 
-@import "../../../bolt/elements/html.css";
-@import "../../../bolt/elements/svg.css";
-@import "../../../bolt/elements/root.css";
-@import "../../../bolt/elements/body.css";
-@import "../../../bolt/elements/type.css";
-@import "../../../bolt/elements/a.css";
-@import "../../../bolt/elements/table.css";
-@import "../../../bolt/elements/input.css";
-@import "../../../bolt/elements/label.css";
+@import "../bolt/elements/html.css";
+@import "../bolt/elements/svg.css";
+@import "../bolt/elements/root.css";
+@import "../bolt/elements/body.css";
+@import "../bolt/elements/type.css";
+@import "../bolt/elements/a.css";
+@import "../bolt/elements/table.css";
+@import "../bolt/elements/input.css";
+@import "../bolt/elements/label.css";
 
-@import "../../../bolt/classes/button.css";
-@import "../../../bolt/classes/list.css";
-@import "../../../bolt/classes/thumb.css";
-@import "../../../bolt/classes/block.css";
-@import "../../../bolt/classes/color.css";
-@import "../../../bolt/classes/pill.css";
-@import "../../../bolt/classes/switch.css";
-@import "../../../bolt/classes/tag.css";
+@import "../bolt/classes/button.css";
+@import "../bolt/classes/list.css";
+@import "../bolt/classes/thumb.css";
+@import "../bolt/classes/block.css";
+@import "../bolt/classes/color.css";
+@import "../bolt/classes/pill.css";
+@import "../bolt/classes/switch.css";
+@import "../bolt/classes/tag.css";
 
-@import "../../../bolt/classes/device.css";
+@import "../bolt/classes/device.css";
 
 @import '../cruncher/classes/atoms.css';
 @import '../cruncher/classes/color.css';

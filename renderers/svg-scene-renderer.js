@@ -1,14 +1,14 @@
 
-import get              from '../../../../fn/modules/get.js';
-import isDefined        from '../../../../fn/modules/is-defined.js';
-import overload         from '../../../../fn/modules/overload.js';
-import { ORIGIN3D }     from '../../../../fn/modules/vector/consts.js';
-import add              from '../../../../fn/modules/vector/add.js';
-import mag              from '../../../../fn/modules/vector/mag.js';
-import multiply         from '../../../../fn/modules/vector/multiply.js';
-import subtract         from '../../../../fn/modules/vector/subtract.js';
-import assignAttributes from '../../../../dom/modules/assign.js';
-import create           from '../../../../dom/modules/create.js';
+import get              from '../../fn/modules/get.js';
+import isDefined        from '../../fn/modules/is-defined.js';
+import overload         from '../../fn/modules/overload.js';
+import { ORIGIN3D }     from '../../fn/modules/vector/consts.js';
+import add              from '../../fn/modules/vector/add.js';
+import mag              from '../../fn/modules/vector/mag.js';
+import multiply         from '../../fn/modules/vector/multiply.js';
+import subtract         from '../../fn/modules/vector/subtract.js';
+import assignAttributes from '../../dom/modules/assign.js';
+import create           from '../../dom/modules/create.js';
 import { translateFromTransform, multiplyMP, multiplyMM, normaliseW } from '../modules/matrix.js';
 import getScale         from './svg/get-scale.js';
 

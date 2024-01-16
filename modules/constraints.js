@@ -1,5 +1,5 @@
 
-import matches from '../../../../fn/modules/matches.js';
+import matches from '../../fn/modules/matches.js';
 
 export const selection = [];
 

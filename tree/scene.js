@@ -1,6 +1,6 @@
 
-import nothing  from '../../../../fn/modules/nothing.js';
-import mix      from '../../../../fn/modules/mix.js';
+import nothing  from '../../fn/modules/nothing.js';
+import mix      from '../../fn/modules/mix.js';
 import Camera   from './camera.js';
 import Group    from './group.js';
 import Object3D from './object.js';

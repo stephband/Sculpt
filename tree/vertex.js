@@ -1,8 +1,8 @@
 
-import { ORIGIN3D } from '../../../../fn/modules/vector/consts.js';
-import matches      from '../../../../fn/modules/matches.js';
-import Privates     from '../../../../fn/modules/privates.js';
-import mix          from '../../../../fn/modules/mix.js';
+import { ORIGIN3D } from '../../fn/modules/vector/consts.js';
+import matches      from '../../fn/modules/matches.js';
+import Privates     from '../../fn/modules/privates.js';
+import mix          from '../../fn/modules/mix.js';
 import Node         from './node.js';
 import { group, groupEnd, log } from '../modules/log.js';
 

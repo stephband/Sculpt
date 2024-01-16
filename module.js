@@ -1,15 +1,15 @@
 
-import '../../../bolt/classes/device.js';
-import '../../../bolt/classes/switch.js';
-import { Data } from '../../../literal/module.js';
+import '../bolt/classes/device.js';
+import '../bolt/classes/switch.js';
+import { Data } from '../literal/module.js';
 
 
 // SCENE
 
-import Stream               from '../../../fn/modules/stream.js';
-import toCartesian          from '../../../fn/modules/vector/to-cartesian-3d.js';
-import toPolar              from '../../../fn/modules/vector/to-polar-3d.js';
-import mag                  from '../../../fn/modules/vector/mag.js';
+import Stream               from '../fn/modules/stream.js';
+import toCartesian          from '../fn/modules/vector/to-cartesian-3d.js';
+import toPolar              from '../fn/modules/vector/to-polar-3d.js';
+import mag                  from '../fn/modules/vector/mag.js';
 import { transformFromTranslation, transformFromRotation, multiplyMM, multiplyMP, invertMatrix, idTransform, transformFromPerspective, transformFromRotationY, normaliseW, flipZTransform, logVector } from './modules/matrix.js';
 import ReadoutRenderer      from './renderers/readout-renderer.js';
 import SVGSceneRenderer     from './renderers/svg-scene-renderer.js';
@@ -76,15 +76,15 @@ const scope = Data({
 
 // USER INPUT
 
-import get      from '../../../../fn/modules/get.js';
-import matches  from '../../../../fn/modules/matches.js';
-import noop     from '../../../../fn/modules/noop.js';
-import overload from '../../../../fn/modules/overload.js';
-import add      from '../../../../fn/modules/vector/add.js';
-import multiply from '../../../../fn/modules/vector/multiply.js';
-import delegate from '../../../../dom/modules/delegate.js';
-import events   from '../../../../dom/modules/events.js';
-import gestures from '../../../../dom/modules/gestures.js';
+import get      from '../../fn/modules/get.js';
+import matches  from '../../fn/modules/matches.js';
+import noop     from '../../fn/modules/noop.js';
+import overload from '../../fn/modules/overload.js';
+import add      from '../../fn/modules/vector/add.js';
+import multiply from '../../fn/modules/vector/multiply.js';
+import delegate from '../../dom/modules/delegate.js';
+import events   from '../../dom/modules/events.js';
+import gestures from '../../dom/modules/gestures.js';
 import FlaggedSet from './modules/flagged-set.js';
 
 const undos     = [];
@@ -209,8 +209,8 @@ events('click', document.body)
 // KEYBOARD
 
 
-import Privates    from '../../../../fn/modules/privates.js';
-import keyboard    from '../../../../dom/modules/keyboard.js';
+import Privates    from '../../fn/modules/privates.js';
+import keyboard    from '../../dom/modules/keyboard.js';
 import toFrameRate from './modules/to-frame-rate.js';
 import { log } from './modules/log.js';
 import { link, unlink, purgeLinks } from './tree/vertex.js';

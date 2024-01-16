@@ -1,7 +1,7 @@
 
-import get      from '../../../../fn/modules/get.js';
-import add      from '../../../../fn/modules/vector/add.js';
-import mix      from '../../../../fn/modules/mix.js';
+import get      from '../../fn/modules/get.js';
+import add      from '../../fn/modules/vector/add.js';
+import mix      from '../../fn/modules/mix.js';
 import { idTransform } from '../modules/matrix.js';
 import Object3D from './object.js';
 import Vertex   from './vertex.js';

@@ -1,10 +1,10 @@
 
-import Stream, { stop, unpipe } from '../../../../fn/modules/stream/stream.js';
-import nothing       from '../../../../fn/modules/nothing.js';
-import overload      from '../../../../fn/modules/overload.js';
-import Privates      from '../../../../fn/modules/privates.js';
-import remove        from '../../../../fn/modules/remove.js';
-import { ORIGIN3D }  from '../../../../fn/modules/vector/consts.js';
+import Stream, { stop, unpipe } from '../../fn/modules/stream/stream.js';
+import nothing       from '../../fn/modules/nothing.js';
+import overload      from '../../fn/modules/overload.js';
+import Privates      from '../../fn/modules/privates.js';
+import remove        from '../../fn/modules/remove.js';
+import { ORIGIN3D }  from '../../fn/modules/vector/consts.js';
 import { translateFromTransform } from '../modules/matrix.js';
 
 

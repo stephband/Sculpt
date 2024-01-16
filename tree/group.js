@@ -1,5 +1,5 @@
 
-import mix      from '../../../../fn/modules/mix.js';
+import mix      from '../../fn/modules/mix.js';
 import Object3D from './object.js';
 import Camera   from './camera.js';
 import Path     from './path.js';

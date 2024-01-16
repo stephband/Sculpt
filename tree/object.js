@@ -1,8 +1,8 @@
 
-import get           from '../../../../fn/modules/get.js';
-import overload      from '../../../../fn/modules/overload.js';
-import Privates      from '../../../../fn/modules/privates.js';
-import mix           from '../../../../fn/modules/mix.js';
+import get           from '../../fn/modules/get.js';
+import overload      from '../../fn/modules/overload.js';
+import Privates      from '../../fn/modules/privates.js';
+import mix           from '../../fn/modules/mix.js';
 import { idTransform, translateFromTransform, multiplyMM, transformFromTranslation, transformFromScale, transformFromRotation, transformFromRotationX, transformFromRotationY, transformFromRotationZ, rotateFromTransform } from '../modules/matrix.js';
 import Node          from './node.js';
 

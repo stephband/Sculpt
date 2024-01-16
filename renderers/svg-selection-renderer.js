@@ -1,11 +1,11 @@
 
-import get              from '../../../../fn/modules/get.js';
-import isDefined        from '../../../../fn/modules/is-defined.js';
-import overload         from '../../../../fn/modules/overload.js';
-import assignAttributes from '../../../../dom/modules/assign.js';
-import create           from '../../../../dom/modules/create.js';
+import get              from '../../fn/modules/get.js';
+import isDefined        from '../../fn/modules/is-defined.js';
+import overload         from '../../fn/modules/overload.js';
+import assignAttributes from '../../dom/modules/assign.js';
+import create           from '../../dom/modules/create.js';
 import { multiplyMP, multiplyMM, normaliseW } from '../modules/matrix.js';
-import { ORIGIN3D }     from '../../../../fn/modules/vector/consts.js';
+import { ORIGIN3D }     from '../../fn/modules/vector/consts.js';
 import getScale         from './svg/get-scale.js';
 
 const assign = Object.assign;

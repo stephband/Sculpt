@@ -1,6 +1,6 @@
 
 
-import nothing  from '../../../fn/modules/nothing.js';
+import nothing  from '../fn/modules/nothing.js';
 import Node     from './tree/node.js';
 import Scene    from './tree/scene.js';
 
