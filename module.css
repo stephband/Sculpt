@@ -1,0 +1,108 @@
+
+@import "../../../bolt/elements/html.css";
+@import "../../../bolt/elements/svg.css";
+@import "../../../bolt/elements/root.css";
+@import "../../../bolt/elements/body.css";
+@import "../../../bolt/elements/type.css";
+@import "../../../bolt/elements/a.css";
+@import "../../../bolt/elements/table.css";
+@import "../../../bolt/elements/input.css";
+@import "../../../bolt/elements/label.css";
+
+@import "../../../bolt/classes/button.css";
+@import "../../../bolt/classes/list.css";
+@import "../../../bolt/classes/thumb.css";
+@import "../../../bolt/classes/block.css";
+@import "../../../bolt/classes/color.css";
+@import "../../../bolt/classes/pill.css";
+@import "../../../bolt/classes/switch.css";
+@import "../../../bolt/classes/tag.css";
+
+@import "../../../bolt/classes/device.css";
+
+@import '../cruncher/classes/atoms.css';
+@import '../cruncher/classes/color.css';
+@import '../cruncher/classes/text.css';
+@import '../cruncher/classes/logo.css';
+@import '../cruncher/classes/nav.css';
+@import '../cruncher/classes/lang.css';
+@import '../cruncher/classes/icon.css';
+
+@import '../cruncher/elements/a.css';
+@import '../cruncher/elements/audio.css';
+@import '../cruncher/elements/blockquote.css';
+@import '../cruncher/elements/root.css';
+@import '../cruncher/elements/code.css';
+
+:root, body {
+    height: 100%;
+    max-height: 100%;
+}
+
+:root {
+    /** --input-font-size
+    Font size of inputs, selects and textareas **/
+    --input-font-size: 0.6875em;
+
+    /** --input-line-height
+    Line height of textareas **/
+    --input-line-height: 1.4em;
+
+    /** --input-background
+    Background of input, select and textareas **/
+    --input-background: var(--slate-1);
+
+    /** --input-border-color
+    Border colour of inputs, selects and textareas **/
+    --input-border-color: var(--slate);
+
+    /** --input-border-width
+    Border width of inputs, selects and textareas **/
+    --input-border-width: 1px;
+
+    /** --input-border-radius
+    Border radius of inputs, selects and textareas **/
+    --input-border-radius: 0.1875rem;
+
+    /** --input-shadow
+    Box shadow of inputs, selects and textareas **/
+    --input-shadow: none;
+
+    /** --input-padding-left **/
+    --input-padding-left: 0.5em;
+
+    /** --input-padding-right **/
+    --input-padding-right: 0.5em;
+
+    /** --input-height
+    Height of inputs and selects **/
+    --input-height: 2em;
+
+    /** --input-color
+    Text colour of inputs, selects and textareas **/
+    --input-color: var(--slate-4);
+}
+
+label {
+    font-family: MartianMono, Menlo, Monaco, monospace;
+    font-size: 0.625rem;
+
+    --font-size:     0.625em;
+    --size:          1.4em;
+    --line-height:   1.4em;
+
+    text-transform: uppercase;
+    color: var(--slate-3);
+}
+
+input,
+select,
+textarea {
+    font-family: MartianMono, Menlo, Monaco, monospace;
+}
+
+.selection-pane {
+    padding: 1em;
+}
+
+
