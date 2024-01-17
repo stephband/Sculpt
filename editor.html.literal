@@ -8,7 +8,7 @@
         window.slideshowStylesheet = 'https://stephen.band/slide-show/build/slide-show-shadow.css';
     </script>
 
-    <link rel="stylesheet" href="./editor/module.css" />
+    <link rel="stylesheet" href="./module.css" />
 
     <style>
         :root {
@@ -162,7 +162,7 @@
     <pre class="x2 y2 x-end y-end" id="readout-4"></pre>
 
     <script type="module">
-        import './editor/module.js';
+        import './module.js';
     </script>
 </body>
 </html>

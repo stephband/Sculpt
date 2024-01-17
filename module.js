@@ -25,8 +25,6 @@ const data = window.location.hash ?
         { type: "camera", projection: 'orthographic', transform: transformFromRotation([0, Math.PI / 2, 0]) },
         /* zy */
         {
-            // Cruncher logo, data has been cleaned, duplicate points removed
-            // TODO: Make points shared between objects match exactly, round to 32bit
             type: "group",
             0: { type: "camera", projection: 'perspective', fov: Math.PI / 4, aspect: 1, transform: multiplyMM(transformFromTranslation(18, 2.8, -34), transformFromRotation([-0.09, Math.PI / 6, 0])) }
         },
@@ -65,6 +63,9 @@ const selection  = new FlaggedSet('selected', () => {
     selections.push(selection);
 });
 
+
+// Literal scope
+
 const scope = Data({
     SVGSceneRenderer:     (element) => new SVGSceneRenderer(element),
     SVGSelectionRenderer: (element) => new SVGSelectionRenderer(element),
@@ -73,6 +74,8 @@ const scope = Data({
     camera: camera1,
     selections
 });
+
+
 
 // USER INPUT
 
@@ -213,231 +216,17 @@ import Privates    from '../../fn/modules/privates.js';
 import keyboard    from '../../dom/modules/keyboard.js';
 import toFrameRate from './modules/to-frame-rate.js';
 import { log } from './modules/log.js';
-import { link, unlink, purgeLinks } from './tree/vertex.js';
+import {
+    deleteSelection,
+    orderSelectionDown,
+    orderSelectionUp,
+    linkSelection,
+    unlinkSelection,
+    updateSelection,
+    createPathFromSelection
+} from './modules/selection.js';
 
 const assign = Object.assign;
-const linkProximity = 0.1;
-
-function deleteSelection() {
-    // Find and delete vertices
-    let vertFlag = false;
-    for (let object of selection) {
-        if (object.type === 'vertex') {
-            object.stop();
-            selection.delete(object);
-            vertFlag = true;
-        }
-    }
-
-    // If vertices were found and deleted, do no more
-    if (vertFlag) { return; }
-
-    // Delete all objects
-    for (let object of selection) {
-        object.stop();
-        selection.delete(object);
-    }
-}
-
-function orderSelectionDown() {
-    // Don't order vertices
-    let vertFlag = false;
-    for (let object of selection) {
-        if (object.type === 'vertex') {
-            return;
-        }
-    }
-
-    // Bump all objects up in order
-    for (let object of selection) {
-        let i = -1;
-        while (object.input[++i] !== object);
-        // Already in first place
-        if (i === 0) { continue; }
-        // Swap with previous output
-        object.input[i] = object.input[i - 1];
-        object.input[i - 1] = object;
-    }
-}
-
-function orderSelectionUp() {
-    // Don't order vertices
-    let vertFlag = false;
-    for (let object of selection) {
-        if (object.type === 'vertex') {
-            return;
-        }
-    }
-
-    // Bump all object down in order
-    for (let object of selection) {
-        let i = -1;
-        while (object.input[++i] && object.input[i] !== object);
-        // Already in last place
-        if (!object.input[i + 1]) { continue; }
-        // Swap with previous output
-        object.input[i] = object.input[i + 1];
-        object.input[i + 1] = object;
-    }
-}
-
-function linkSelection() {
-    const verts = [];
-
-    // Populate verts from vertices
-    for (let object of selection) {
-        if (object.type === 'vertex') {
-            verts.push(object);
-        }
-    }
-
-    // If no vertices found
-    if (!verts.length) {
-        // Populate verts from objects
-        for (let object of selection) {
-            let n = -1, vert;
-            while (vert = object[++n]) (vert.type === 'vertex' && verts.push(vert));
-        }
-    }
-
-    let n = -1, vert1, vert2, pos1, pos2;
-    while (vert1 = verts[++n]) {
-        let m = n;
-        pos1 = vert1.position;
-        while (vert2 = verts[++m]) {
-            pos2 = vert2.position;
-            if (mag([pos2[0] - pos1[0], pos2[1] - pos1[1], pos2[2] - pos1[2]]) < linkProximity) {
-                // Create link
-                link(vert1, vert2);
-                verts.splice(m, 1);
-                --m;
-            }
-        }
-    };
-
-    // TODO: trigger .changed() on verts
-    scene.push('render');
-}
-
-function unlinkSelection() {
-    const verts = [];
-
-    // Populate verts from vertices
-    for (let object of selection) {
-        if (object.type === 'vertex') {
-            verts.push(object);
-        }
-    }
-
-    // If no vertices found
-    if (!verts.length) {
-        // Populate verts from objects
-        for (let object of selection) {
-            let n = -1, vert;
-            while (vert = object[++n]) (vert.type === 'vertex' && verts.push(vert));
-        }
-    }
-
-    let n = -1, vert;
-    while (vert = verts[++n]) {
-        let m = n;
-        unlink(vert);
-        vert.changed();
-    };
-
-    purgeLinks(scene);
-}
-
-function updateSelection(view, translation) {
-    const viewTransform = view.getSceneTransform();
-    const viewInversion = invertMatrix(viewTransform);
-
-    // Move vertices
-    let vertFlag = false;
-    for (let object of selection) {
-        if (object.type === 'vertex') {
-            const objectTransform = object.getSceneTransform();
-            const objectInversion = invertMatrix(objectTransform);
-            const positionW = multiplyMP(viewInversion, multiplyMP(objectTransform, object.position));
-            const position  = new Float32Array(positionW.buffer, 0, 3);
-
-            if (!view.projection || view.projection === 'orthographic') {
-                // XYZ translation
-                add(translation, position, position);
-            }
-            else {
-                // Ray-space translation
-                position[0] += translation[0];
-                position[1] += translation[1];
-
-                // Change meaning of z to distance-from-source
-                //logVector('translation', translation);
-                if (translation[2]) {
-                    // Let's try some easy maths, no trig
-                    const d     = mag(position);
-                    const dt    = d + translation[2];
-
-                    if (dt > 0.001) {
-                        const scale = dt / d ;
-                        position[0] *= scale;
-                        position[1] *= scale;
-                        position[2] *= scale;
-                    }
-                }
-            }
-
-            // Apply the translation
-            object.position = multiplyMP(objectInversion, multiplyMP(viewTransform, position));
-            vertFlag = true;
-        }
-    }
-
-    // If vertices were found, do no more
-    if (vertFlag) { return; }
-
-    const lensTransform = view.projection === 'perspective' ?
-        transformFromPerspective(view.fov, view.aspect, view.near, view.far) :
-        idTransform ;
-    const lensInversion = view.projection === 'perspective' ?
-        invertMatrix(lensTransform) :
-        idTransform ;
-
-    // Move all objects
-    for (let object of selection) {
-        const objectTransform = object.input.getSceneTransform();
-        const objectInversion = invertMatrix(objectTransform);
-        const position = normaliseW(multiplyMP(lensTransform, multiplyMP(flipZTransform, multiplyMP(viewInversion, multiplyMP(objectInversion, object.position)))));
-        add(translation, position, position);
-        object.position = multiplyMP(objectTransform, multiplyMP(viewTransform, multiplyMP(flipZTransform, normaliseW(multiplyMP(lensInversion, position)))));
-    }
-}
-
-function createPathFromSelection() {
-    // Find and delete vertices
-    let verts = [];
-    for (let object of selection) {
-        if (object.type === 'vertex') {
-            verts.push(object);
-        }
-    }
-
-    // If vertices were not found, do no more
-    if (!verts.length) { return; }
-
-    const path = scene.create(assign({
-        type: 'path',
-        data: { class: 'slate-bg' }
-    }, verts));
-
-    let v = -1, vert;
-    while (vert = verts[++v]) {
-        if (!vert.link) {
-            link(vert, path[v]);
-        }
-    }
-
-    path.changed();
-}
 
 function updateAngleY(object, n) {
     const transform = Privates(object).transform;
@@ -446,49 +235,17 @@ function updateAngleY(object, n) {
     object.push('invalidate');
     object.changed();
 }
-/*
-events('keydown', document.body)
-.each(overload(toModifiedKey, {
-    // object order
-    'shift-+-down':     orderSelectionUp,
-    'shift-_-down':     orderSelectionDown,
-    // create path
-    'p-down':           createPathFromSelection,
-    // Save
-    'cmd-s-down': (e) => {
-        let n = 0;
-        while(localStorage.getItem('scene-' + (++n)));
-        localStorage.setItem('scene-' + n, JSON.stringify(scene));
-        console.log('Saved to local storage "scene-' + n + '"');
-        window.location.hash = 'scene-' + n;
-        e.preventDefault();
-    },
-    // Cut
-    'Backspace-down':   deleteSelection,
-    'cmd-x-down':       deleteSelection,
-    // Copy
-    'cmd-c-down': () => console.log('TODO: COPY'),
-    // Undo
-    'cmd-z-down': () => console.log('TODO: UNDO'),
-    // Redo
-    'shift-cmd-z-down': () => console.log('TODO: REDO'),
-    // Link vertices
-    'shift-L-down':     linkSelection,
-    'shift-cmd-l-down': unlinkSelection,
-    // Ignore
-    default: noop
-}));
-*/
+
 const keys = keyboard({
     // object order
-    'shift-underscaore-down': orderSelectionDown,
-    'shift-equals-down':      orderSelectionUp,
+    'shift-minus:down':  orderSelectionDown,
+    'shift-equals:down': orderSelectionUp,
 
     // create path
-    'P-down':           createPathFromSelection,
+    'P:down':           createPathFromSelection,
 
     // Save
-    'cmd-S-down': (e) => {
+    'cmd-S:down': (e) => {
         let n = 0;
         while(localStorage.getItem('scene-' + (++n)));
         localStorage.setItem('scene-' + n, JSON.stringify(scene));
@@ -498,21 +255,21 @@ const keys = keyboard({
     },
 
     // Cut
-    'Backspace-down':   deleteSelection,
-    'cmd-X-down':       deleteSelection,
+    'backspace:down':   deleteSelection,
+    'cmd-X:down':       deleteSelection,
 
     // Copy
-    'cmd-C-down': () => console.log('TODO: COPY'),
+    'cmd-C:down': () => console.log('TODO: COPY'),
 
     // Undo
-    'cmd-Z-down': () => console.log('TODO: UNDO'),
+    'cmd-Z:down': () => console.log('TODO: UNDO'),
 
     // Redo
-    'shift-cmd-Z-down': () => console.log('TODO: REDO'),
+    'shift-cmd-Z:down': () => console.log('TODO: REDO'),
 
     // Link vertices
-    'shift-L-down':     linkSelection,
-    'shift-cmd-L-down': unlinkSelection,
+    'shift-L:down':     linkSelection,
+    'shift-cmd-L:down': unlinkSelection,
 
     // X
     'left':        (keys) => updateSelection(scope.camera, [toFrameRate(-6), 0, 0]),
@@ -546,21 +303,21 @@ const keys = keyboard({
 
     // Rotate
 
-    ',': (keys) => {
-        const rot = camera.rotation;
-        rot[1] -= Math.PI / 360;
-        // TODO: position must be set back on object due to implementation detail, fix it?
-        scope.camera.rotation = rot;
-    },
+//    ',': (keys) => {
+//        const rot = camera.rotation;
+//        rot[1] -= Math.PI / 360;
+//        // TODO: position must be set back on object due to implementation detail, fix it?
+//        scope.camera.rotation = rot;
+//    },
+//
+//    '.': (keys) => {
+//        const rot = camera.rotation;
+//        rot[1] += Math.PI / 360;
+//        // TODO: position must be set back on object due to implementation detail, fix it
+//        scope.camera.rotation = rot;
+//    },
 
-    '.': (keys) => {
-        const rot = camera.rotation;
-        rot[1] += Math.PI / 360;
-        // TODO: position must be set back on object due to implementation detail, fix it
-        scope.camera.rotation = rot;
-    },
-
-    default: (e, code) => console.log(code, 'no response')
+    default: noop
 }, document.body);
 
 export default scope;

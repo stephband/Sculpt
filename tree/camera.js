@@ -43,11 +43,10 @@ export default function Camera(transform, options) {
     this.far        = options.far    || defaults.far;
     this.dof        = options.dof    || defaults.dof;
 
-    const throttle = privates.throttle = Stream.of().throttle('frame');
-
     // When a throttled update signal is received, capture renderables and
-    // broadcast them
-    throttle.each(() => Node.prototype.push.call(this, this.capture()));
+    // broadcast them at .feed
+    const throttle = privates.throttle = Stream.of().throttle('frame');
+    this.output = throttle.map(() => this.capture()).broadcast({ hot: true });
 }
 
 assign(Camera, {
@@ -73,22 +72,6 @@ assign(Camera.prototype, {
         default: noop
     }),
 
-    find:    noop,
-    findAll: () => nothing,
-
-    getRenderables: function() {
-        this.renderables = this.renderables || [];
-        this.renderables.length = 0;
-
-        // No child objects. The buck stops here.
-        this.renderables.push({
-            object:    this,
-            transform: Float32Array.from(this.transform)
-        });
-
-        return this.renderables;
-    },
-
     capture: function() {
         const projection  = this.projection;
         const renderables = this.getRoot().getRenderables().filter((renderable) => {
@@ -109,17 +92,14 @@ assign(Camera.prototype, {
     },
 
     toJSON: function() {
-        // Don't JSONify children
-        return {
-            id:         this.id,
-            type:       this.type,
-            transform:  Array.from(this.transform),
+        const json = Object3D.prototype.toJSON(this);
+        return assign(json, {
             projection: this.projection,
             fov:        this.fov,
             aspect:     this.aspect,
             near:       this.near ,
             far:        this.far,
             dof:        this.dof,
-        };
+        });
     }
 });

@@ -99,18 +99,18 @@
         }
     </style>
 
-    <template id="pane-template" nostrict>
-        <svg class="${'x' + x} ${'y' + y}" viewBox="${ viewbox.join(' ') }" preserveAspectRatio="xMidYMid">
+    <template id="sculpt-player" nostrict>
+        <svg viewBox="${ viewbox.join(' ') }" preserveAspectRatio="xMidYMid">
             <use href="#grid" hidden="${ camera.projection !== 'orthographic' }"></use>
-            <g part="scene" data-renderer="${ DATA.camera.output.pipe(SVGSceneRenderer(element)) }" data-camera-index="${ i }"></g>
-            <g part="editor" data-renderer="${ DATA.camera.output.pipe(SVGSelectionRenderer(element)) }" data-camera-index="${ i }"></g>
-            <use href="#frame${ frame ? '-' + frame : '' }" hidden="${ camera.projection !== 'perspective' }"></use>
+            <g part="scene" data-renderer="${ DATA.camera.output.pipe(SVGSceneRenderer(element)) }"></g>
         </svg>
-        <pre class="${'x' + x} ${'y' + y} x-start y-end">${ /* capitalise */ camera.projection[0].toUpperCase() + camera.projection.slice(1) }</pre>
-        <pre class="${'x' + x} ${'y' + y} x-center y-end">${ camera.projection === 'perspective' ? Math.round(deg(camera.fov)) + '°' : '' }</pre>
-        <input class="${'x' + x} ${'y' + y} invisible" type="radio" name="keyboard-target" value="${ DATA.camera.id }" id="keyboard-target-${ i }" />
-        <label class="tag ${'x' + x} ${'y' + y} x-end y-end" for="keyboard-target-${ i }">keys</label>
-        <pre class="${'x' + x} ${'y' + y} x-end y-end">${ camera.position[0].toFixed(0) + ', ' + camera.position[1].toFixed(0) + ', ' + camera.position[2].toFixed(0) }</pre>
+        <div part="controls">
+            <pre>${ /* capitalise */ camera.projection[0].toUpperCase() + camera.projection.slice(1) }</pre>
+            <pre>${ camera.projection === 'perspective' ? Math.round(deg(camera.fov)) + '°' : '' }</pre>
+            <input class="invisible" type="radio" name="keyboard-target" value="${ DATA.camera.id }" id="keyboard-target-${ i }" />
+            <label for="keyboard-target-${ i }">keys</label>
+            <pre>${ camera.position[0].toFixed(0) + ', ' + camera.position[1].toFixed(0) + ', ' + camera.position[2].toFixed(0) }</pre>
+        </div>
     </template>
 
     <template id="data-template">
@@ -167,6 +167,8 @@
             })) }
         </form>
     </template>
+
+    <sculpt-player src="../data/logo-50.json" camera="1"></sculpt-player>
 
     <svg hidden>
         <defs>

@@ -37,9 +37,10 @@ export function link(vert1, vert2) {
             // Merge second link into first
             const link2 = vert2.link;
             const scene = vert2.getRoot();
-            scene.findAll({ link }).forEach((vert) => {
+            scene.findAll({ link: link2 }).forEach((vert) => {
                 vert.link = link1;
                 Privates(vert).position = pos;
+                vert2.changed();
             });
 
             // Remove dud link
@@ -50,6 +51,7 @@ export function link(vert1, vert2) {
         // Link vert2 to vert1
         vert2.link = link1;
         Privates(vert2).position = pos;
+        vert2.changed();
         return;
     }
 
@@ -62,6 +64,7 @@ export function link(vert1, vert2) {
         // Link vert1 to vert2
         vert1.link = link2;
         Privates(vert1).position = pos;
+        vert1.changed();
         return;
     }
 

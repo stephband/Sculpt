@@ -42,12 +42,17 @@ export default function Object3D(transform = idTransform) {
     }
     privates.transform = Float32Array.from(transform);
 
-    // Position array is a buffer view for transform[12, 13, 14]
-    privates.position  = new Float32Array(
+    // Position array is a buffer view for transform[12, 13, 14]. TODO: don't
+    // we want position to be the transform of [0,0,0] ? That's the meaning of
+    // position on a vertex... its current position in its parent's transform
+    // space... why not an object also?
+    privates.position = new Float32Array(
         privates.transform.buffer,
         12 * privates.transform.BYTES_PER_ELEMENT,
         3
     );
+
+    privates.renderables = [];
 }
 
 assign(Object3D, {
@@ -125,8 +130,10 @@ assign(Object3D.prototype, Node.prototpye, {
         invalidate: function() {
             const privates = Privates(this);
             // If we are already invalid, don't propagate
-            if (privates.sceneTransform === null) { return 0; }
+            if (privates.sceneTransform === null && !privates.validRenderables) { return 0; }
             privates.sceneTransform = null;
+            privates.renderables.length = 0;
+            privates.validRenderables = false;
             console.log('Invalidated', this);
             return Node.prototype.push.apply(this, arguments);
         },
@@ -154,14 +161,20 @@ assign(Object3D.prototype, Node.prototpye, {
     },
 
     getRenderables: function() {
-        this.renderables = this.renderables || [];
-        this.renderables.length = 0;
+        const privates = Privates(this);
+
+        // If cache is valid return cached renderables
+        if (privates.validRenderables) {
+            return privates.renderables;
+        }
+
+        privates.renderables.length = 0;
 
         // No child objects?
         if (!this[0]) {
             // Create renderable instruction – make sure we give it a fresh
             // transform array that may be mutated.
-            this.renderables.push({
+            privates.renderables.push({
                 object:    this,
                 transform: Float32Array.from(this.transform)
             });
@@ -178,15 +191,18 @@ assign(Object3D.prototype, Node.prototpye, {
 
                 // Transform them to this coordinate space
                 for(renderable of renderables) {
+                    // DANGER! we are mutating renderable.transform ??? But we have cached renderables?
+                    // Actually, thinking about it, the caceh dont work...
                     multiplyMM(this.transform, renderable.transform, renderable.transform);
                 }
 
                 // Push them to this.renderables
-                this.renderables.push.apply(this.renderables, renderables);
+                privates.renderables.push.apply(privates.renderables, renderables);
             }
         }
 
-        return this.renderables;
+        privates.validRenderables = true;
+        return privates.renderables;
     },
 
     toJSON: function() {

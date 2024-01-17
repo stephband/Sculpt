@@ -20,19 +20,19 @@
 
 @import "../bolt/classes/device.css";
 
-@import '../cruncher/classes/atoms.css';
-@import '../cruncher/classes/color.css';
-@import '../cruncher/classes/text.css';
-@import '../cruncher/classes/logo.css';
-@import '../cruncher/classes/nav.css';
-@import '../cruncher/classes/lang.css';
-@import '../cruncher/classes/icon.css';
+@import '../cruncher/static/cruncher/classes/atoms.css';
+@import '../cruncher/static/cruncher/classes/color.css';
+@import '../cruncher/static/cruncher/classes/text.css';
+@import '../cruncher/static/cruncher/classes/logo.css';
+@import '../cruncher/static/cruncher/classes/nav.css';
+@import '../cruncher/static/cruncher/classes/lang.css';
+@import '../cruncher/static/cruncher/classes/icon.css';
 
-@import '../cruncher/elements/a.css';
-@import '../cruncher/elements/audio.css';
-@import '../cruncher/elements/blockquote.css';
-@import '../cruncher/elements/root.css';
-@import '../cruncher/elements/code.css';
+@import '../cruncher/static/cruncher/elements/a.css';
+@import '../cruncher/static/cruncher/elements/audio.css';
+@import '../cruncher/static/cruncher/elements/blockquote.css';
+@import '../cruncher/static/cruncher/elements/root.css';
+@import '../cruncher/static/cruncher/elements/code.css';
 
 :root, body {
     height: 100%;
