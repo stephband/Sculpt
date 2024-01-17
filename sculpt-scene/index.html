@@ -27,15 +27,11 @@
         window.addEventListener('load', () => window.requestAnimationFrame(() => document.documentElement.classList.remove('loading')));
     </script>
 
-    <script title="config">
-        window.slideshowStylesheet = 'https://stephen.band/slide-show/build/slide-show-shadow.css';
-    </script>
-
-    <link rel="stylesheet" href="./module.css" />
+    <link rel="stylesheet" href="../module.css" />
 
     <style>
         :root {
-            background-color: var(--slate);
+            background-color: brown;
         }
 
         .editor-grid {
@@ -99,76 +95,23 @@
         }
     </style>
 
-    <template id="sculpt-player" nostrict>
+    <template id="sculpt-scene" nostrict>
+        <link rel="stylesheet" href="./shadow.css"></link>
         <svg viewBox="${ viewbox.join(' ') }" preserveAspectRatio="xMidYMid">
             <use href="#grid" hidden="${ camera.projection !== 'orthographic' }"></use>
-            <g part="scene" data-renderer="${ DATA.camera.output.pipe(SVGSceneRenderer(element)) }"></g>
+            <g part="scene"></g>
         </svg>
         <div part="controls">
             <pre>${ /* capitalise */ camera.projection[0].toUpperCase() + camera.projection.slice(1) }</pre>
             <pre>${ camera.projection === 'perspective' ? Math.round(deg(camera.fov)) + '°' : '' }</pre>
-            <input class="invisible" type="radio" name="keyboard-target" value="${ DATA.camera.id }" id="keyboard-target-${ i }" />
-            <label for="keyboard-target-${ i }">keys</label>
             <pre>${ camera.position[0].toFixed(0) + ', ' + camera.position[1].toFixed(0) + ', ' + camera.position[2].toFixed(0) }</pre>
         </div>
     </template>
-
-    <template id="data-template">
-        <label>Class</label>
-        <input type="text" name="data.class" value="${ data.data.class }" />
-        <label>Style</label>
-        <textarea type="text" name="data.class">${ data.data.style }</textarea>
-    </template>
-
-    <template id="object-selection-template" nostrict>
-        <label>id</label>
-        <input type="text" name="object.id" value="${ object.id }" />
-        <label>${ object.type === 'path' ? 'Vertices' : 'Children' }</label>
-        <input type="text" name="object.length" value="${ ((object) => { let n = -1; while(object[++n]); return n; })(object) }" readonly />
-        ${ object.data ? include('#data-template', { data: object.data }) : '' }
-    </template>
-
-    <template id="multiple-selection-template" nostrict>
-        <label>Objects</label>
-        <input type="text" name="object.length" value="${ objects.reduce((n, object) => n += (object.type !== 'vertex'), 0) }" readonly />
-        <label>Vertices</label>
-        <input type="text" name="object.length" value="${ objects.reduce((n, object) => n += (object.type === 'vertex'), 0) }" readonly />
-    </template>
 </head>
 
-<body class="2x-grid 2y-grid editor-grid grid">
-    <template is="literal-html" id="panes-template" src="./module.js" nostrict>
-    ${ events('change', body).each(delegate({
-        '[name=keyboard-target]': (input, e) => camera = scene.find(matches({ id: input.value }))
-    })) }
-
-    ${ [
-        { SVGSceneRenderer, SVGSelectionRenderer, x: 1, y: 1, camera: cameras[0], i: 0, viewbox: [-18, -15, 36, 36] },
-        { SVGSceneRenderer, SVGSelectionRenderer, x: 2, y: 1, camera: cameras[3], i: 3, viewbox: [-1.125, -1.125, 2.25, 2.25], frame: '1:1' },
-        { SVGSceneRenderer, SVGSelectionRenderer, x: 1, y: 2, camera: cameras[1], i: 1, viewbox: [-28, -18, 36, 36] },
-        { SVGSceneRenderer, SVGSelectionRenderer, x: 2, y: 2, camera: cameras[2], i: 2, viewbox: [-1.125, -1.125, 2.25, 2.25], frame: '1:1' }
-    ].map(include('#pane-template')) }
-
-    ${ requestAnimationFrame(() => scene.push('render')), '' }
-    </template>
-
-    <template is="literal-html" id="selection-pane-template" src="./module.js" nostrict>
-        <form class="x3 y1 2y selection-pane">
-            ${ selections.map(overload((selection) => selection.size, {
-                0: (selection) => 'No selection',
-
-                1: (selection) => include('#object-selection-template', {
-                    object: selection.values().next().value
-                }),
-
-                default: (selection) => include('#multiple-selection-template', {
-                    objects: Array.from(selection)
-                })
-            })) }
-        </form>
-    </template>
-
-    <sculpt-player src="../data/logo-50.json" camera="1"></sculpt-player>
+<body class="3x-grid grid">
+    <sculpt-scene src="../data/logo-50.json" camera="2"></sculpt-scene>
+    <sculpt-scene src="../data/logo-50.json" camera="3"></sculpt-scene>
 
     <svg hidden>
         <defs>
@@ -283,8 +226,7 @@
     </svg>
 
     <script type="module">
-        import '../literal/literal-html/module.js';
-        import scope from './module.js';
+        import SculptScene from './module.js';
 
         //scope.scene.push('render');
         //import './test.js';
