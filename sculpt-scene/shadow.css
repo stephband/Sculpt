@@ -3,5 +3,5 @@
 @import "../../bolt/elements/svg.css";
 @import "../../bolt/elements/a.css";
 
-@import '../../cruncher/static/cruncher/classes/color.css';
-@import '../../cruncher/static/cruncher/classes/text.css';
+@import '../../cruncher/classes/color.css';
+@import '../../cruncher/classes/text.css';
