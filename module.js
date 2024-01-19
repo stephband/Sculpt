@@ -15,6 +15,7 @@ import ReadoutRenderer      from './renderers/readout-renderer.js';
 import SVGSceneRenderer     from './renderers/svg-scene-renderer.js';
 import SVGSelectionRenderer from './renderers/svg-selection-renderer.js';
 import Scene                from './tree/scene.js';
+import selection            from './modules/selection.js';
 
 const data = window.location.hash ?
     JSON.parse(localStorage.getItem(window.location.hash.replace(/^#/, ''))) :
@@ -58,10 +59,11 @@ const data = window.location.hash ?
 const scene = new Scene(data);
 const [camera1, camera2, camera3, camera4] = scene.findAll(matches({ type: 'camera' }));
 const selections = Stream.of();
-const selection  = new FlaggedSet('selected', () => {
+
+selection.onchange = () => {
     scene.push('render');
     selections.push(selection);
-});
+};
 
 
 // Literal scope
@@ -83,12 +85,9 @@ import get      from '../../fn/modules/get.js';
 import matches  from '../../fn/modules/matches.js';
 import noop     from '../../fn/modules/noop.js';
 import overload from '../../fn/modules/overload.js';
-import add      from '../../fn/modules/vector/add.js';
-import multiply from '../../fn/modules/vector/multiply.js';
 import delegate from '../../dom/modules/delegate.js';
 import events   from '../../dom/modules/events.js';
 import gestures from '../../dom/modules/gestures.js';
-import FlaggedSet from './modules/flagged-set.js';
 
 const undos     = [];
 
@@ -214,6 +213,7 @@ events('click', document.body)
 
 import Privates    from '../../fn/modules/privates.js';
 import keyboard    from '../../dom/modules/keyboard.js';
+import { setDataTransfer } from '../../dom/modules/data-transfer.js';
 import toFrameRate from './modules/to-frame-rate.js';
 import { log } from './modules/log.js';
 import {
@@ -254,12 +254,8 @@ const keys = keyboard({
         e.preventDefault();
     },
 
-    // Cut
+    // Delete
     'backspace:down':   deleteSelection,
-    'cmd-X:down':       deleteSelection,
-
-    // Copy
-    'cmd-C:down': () => console.log('TODO: COPY'),
 
     // Undo
     'cmd-Z:down': () => console.log('TODO: UNDO'),
@@ -272,45 +268,45 @@ const keys = keyboard({
     'shift-cmd-L:down': unlinkSelection,
 
     // X
-    'left':        (keys) => updateSelection(scope.camera, [toFrameRate(-6), 0, 0]),
-    'right':       (keys) => updateSelection(scope.camera, [toFrameRate(6), 0, 0]),
-    'shift-left':  (keys) => updateSelection(scope.camera, [toFrameRate(-36), 0, 0]),
-    'shift-right': (keys) => updateSelection(scope.camera, [toFrameRate(36), 0, 0]),
-    'opt-left':    (keys) => updateSelection(scope.camera, [toFrameRate(-1), 0, 0]),
-    'opt-right':   (keys) => updateSelection(scope.camera, [toFrameRate(1), 0, 0]),
+    'left':        (e) => updateSelection(scope.camera, [toFrameRate(-6), 0, 0]),
+    'right':       (e) => updateSelection(scope.camera, [toFrameRate(6), 0, 0]),
+    'shift-left':  (e) => updateSelection(scope.camera, [toFrameRate(-36), 0, 0]),
+    'shift-right': (e) => updateSelection(scope.camera, [toFrameRate(36), 0, 0]),
+    'opt-left':    (e) => updateSelection(scope.camera, [toFrameRate(-1), 0, 0]),
+    'opt-right':   (e) => updateSelection(scope.camera, [toFrameRate(1), 0, 0]),
 
     // Y
-    'down':        (keys) => updateSelection(scope.camera, [0, toFrameRate(-6), 0]),
-    'up':          (keys) => updateSelection(scope.camera, [0, toFrameRate(6), 0]),
-    'shift-down':  (keys) => updateSelection(scope.camera, [0, toFrameRate(-36), 0]),
-    'shift-up':    (keys) => updateSelection(scope.camera, [0, toFrameRate(36), 0]),
-    'opt-down':    (keys) => updateSelection(scope.camera, [0, toFrameRate(-1), 0]),
-    'opt-up':      (keys) => updateSelection(scope.camera, [0, toFrameRate(1), 0]),
+    'down':        (e) => updateSelection(scope.camera, [0, toFrameRate(-6), 0]),
+    'up':          (e) => updateSelection(scope.camera, [0, toFrameRate(6), 0]),
+    'shift-down':  (e) => updateSelection(scope.camera, [0, toFrameRate(-36), 0]),
+    'shift-up':    (e) => updateSelection(scope.camera, [0, toFrameRate(36), 0]),
+    'opt-down':    (e) => updateSelection(scope.camera, [0, toFrameRate(-1), 0]),
+    'opt-up':      (e) => updateSelection(scope.camera, [0, toFrameRate(1), 0]),
 
     // Z
-    "slash":       (keys) => updateSelection(scope.camera, [0, 0, toFrameRate(-6)]),
-    "quote":       (keys) => updateSelection(scope.camera, [0, 0, toFrameRate(6)]),
-    "shift-slash": (keys) => updateSelection(scope.camera, [0, 0, toFrameRate(-36)]),
-    "shift-quote": (keys) => updateSelection(scope.camera, [0, 0, toFrameRate(36)]),
-    "opt-slash":   (keys) => updateSelection(scope.camera, [0, 0, toFrameRate(-1)]),
-    "opt-quote":   (keys) => updateSelection(scope.camera, [0, 0, toFrameRate(1)]),
+    "slash":       (e) => updateSelection(scope.camera, [0, 0, toFrameRate(-6)]),
+    "quote":       (e) => updateSelection(scope.camera, [0, 0, toFrameRate(6)]),
+    "shift-slash": (e) => updateSelection(scope.camera, [0, 0, toFrameRate(-36)]),
+    "shift-quote": (e) => updateSelection(scope.camera, [0, 0, toFrameRate(36)]),
+    "opt-slash":   (e) => updateSelection(scope.camera, [0, 0, toFrameRate(-1)]),
+    "opt-quote":   (e) => updateSelection(scope.camera, [0, 0, toFrameRate(1)]),
 
     // View position
-    "comma":       (keys) => updateAngleY(camera3, toFrameRate(-Math.PI / 3)),
-    "period":      (keys) => updateAngleY(camera3, toFrameRate(Math.PI / 3)),
-    "opt-comma":   (keys) => updateAngleY(camera3, toFrameRate(-Math.PI / 0.5)),
-    "opt-period":  (keys) => updateAngleY(camera3, toFrameRate(Math.PI / 0.5)),
+    "comma":       (e) => updateAngleY(camera3, toFrameRate(-Math.PI / 3)),
+    "period":      (e) => updateAngleY(camera3, toFrameRate(Math.PI / 3)),
+    "opt-comma":   (e) => updateAngleY(camera3, toFrameRate(-Math.PI / 0.5)),
+    "opt-period":  (e) => updateAngleY(camera3, toFrameRate(Math.PI / 0.5)),
 
     // Rotate
 
-//    ',': (keys) => {
+//    ',': (e) => {
 //        const rot = camera.rotation;
 //        rot[1] -= Math.PI / 360;
 //        // TODO: position must be set back on object due to implementation detail, fix it?
 //        scope.camera.rotation = rot;
 //    },
 //
-//    '.': (keys) => {
+//    '.': (e) => {
 //        const rot = camera.rotation;
 //        rot[1] += Math.PI / 360;
 //        // TODO: position must be set back on object due to implementation detail, fix it
@@ -319,6 +315,77 @@ const keys = keyboard({
 
     default: noop
 }, document.body);
+
+const cut = events('cut', document).each((e) => {
+    // Ignore cut from form fields
+    if (e.target.type) { return; }
+
+    const json = JSON.stringify(Array.from(selection));
+    if (json === '[]') { return; }
+
+    deleteSelection();
+
+    setDataTransfer(e.clipboardData, {
+        "text/plain":       json,
+        "application/json": json
+    });
+
+    e.preventDefault();
+});
+
+const copy = events('copy', document).each((e) => {
+    // Ignore copy from form fields
+    if (e.target.type) { return; }
+
+    const json = JSON.stringify(Array.from(selection));
+    if (json === '[]') { return; }
+
+    setDataTransfer(e.clipboardData, {
+        "text/plain":       json,
+        "application/json": json
+    });
+
+    e.preventDefault();
+});
+
+const paste = events('paste', document).each((e) => {
+    // Ignore pate to form fields
+    if (e.target.type) { return; }
+
+    const json    = e.clipboardData.getData('application/json');
+    let objects;
+
+    try { objects = JSON.parse(json); }
+    catch(e) { return; }
+
+    if (!objects.length) { return; }
+    e.preventDefault();
+
+    objects.forEach((object) => {
+        if (object.type === 'vertex') {
+            // Do nothing
+            return;
+        }
+
+        // Strip links from vertices... they are potentially useful, but will
+        // cause havoc if pasted between documents. TODO: include scene info
+        // in copy paste data to check whether we are pasting into same scene?
+        // I don't thiiiink so.
+        let n = -1, vertex;
+        while (vertex = object[++n]) {
+            vertex.link = undefined;
+        }
+
+        scene.create(object);
+    });
+
+    scene.push('invalidate');
+    scene.push('render');
+ });
+
+
+
+
 
 export default scope;
 

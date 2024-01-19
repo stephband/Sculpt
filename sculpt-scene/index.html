@@ -110,8 +110,14 @@
 </head>
 
 <body class="3x-grid grid">
+    <sculpt-scene src="../data/logo-50.json" camera="0" viewbox="-20 -20 40 40"></sculpt-scene>
+    <sculpt-scene src="../data/logo-50.json" camera="1" viewbox="-20 -20 40 40"></sculpt-scene>
     <sculpt-scene src="../data/logo-50.json" camera="2"></sculpt-scene>
-    <sculpt-scene src="../data/logo-50.json" camera="3"></sculpt-scene>
+
+    <sculpt-scene src="../data/logo-50.json" camera="3" id="sculpt-scene-3">
+        <!-- content should be hidden -->
+        <img src="./" />
+    </sculpt-scene>
 
     <svg hidden>
         <defs>
@@ -226,7 +232,78 @@
     </svg>
 
     <script type="module">
+        import Privates    from '../../fn/modules/privates.js';
+        import events      from '../../dom/modules/events.js';
+        import rect        from '../../dom/modules/rect.js';
         import SculptScene from './module.js';
+        import { transformFromRotationX, transformFromRotationY, multiplyMM } from '../modules/matrix.js';
+
+        const abs      = Math.abs;
+        const element  = document.getElementById('sculpt-scene-3');
+        let transform0, frame, ratiox = 0, ratioy = 0, pointerx = 0, pointery = 0, attractFn = pullToCentre;
+
+        events('pointerenter', element).each(() => attractFn = pullToPointer);
+        events('pointerleave', element).each(() => attractFn = pullToCentre);
+        events('pointermove',  element)
+        .each((e) => {
+            const camera = element.camera;
+            if (!camera) { return; }
+            if (!transform0) { transform0 = Float32Array.from(Privates(camera).transform); }
+            const x = e.clientX;
+            const y = e.clientY;
+            const box = rect(element);
+            const w = box.width;
+            const h = box.height;
+            const l = box.left;
+            const t = box.top;
+            pointerx = 2 * ((x - l) / w) - 1;
+            pointery = 2 * ((y - t) / h) - 1;
+            updateAngle(transform0, camera, ratioy, ratiox);
+            if (!frame) {
+                frame = requestAnimationFrame(() => attractFn(transform0, camera));
+            }
+        });
+
+        function updateAngle(transform0, object, x, y) {
+            const transform = Privates(object).transform;
+            const t = multiplyMM(transformFromRotationX(x * Math.PI / 18), transformFromRotationY(y * Math.PI / 18));
+            multiplyMM(t, transform0, transform);
+            object.push('invalidate');
+            object.changed();
+        }
+
+        function pullToPointer(transform0, object) {
+            const dx = pointerx - ratiox;
+            const mx = abs(dx);
+            ratiox += dx * 0.2 * (1 - mx);
+
+            const dy = pointery - ratioy;
+            const my = abs(dy);
+            ratioy += dy * 0.2 * (1 - my);
+
+            updateAngle(transform0, object, ratioy, ratiox);
+
+            // Stop frames when we are close to pointer
+            if (abs(dx) < 0.02 && abs(dy) < 0.02) {
+                frame = undefined;
+                return;
+            }
+
+            frame = requestAnimationFrame(() => attractFn(transform0, object));
+        }
+
+        function pullToCentre(transform0, object) {
+            ratiox = 0.99 * ratiox;
+            ratioy = 0.99 * ratioy;
+            // Stop frames when we are close to centre
+            if (abs(ratiox) < 0.02 && abs(ratioy) < 0.02) {
+                updateAngle(transform0, object, 0, 0);
+                frame  = undefined;
+                return;
+            }
+            updateAngle(transform0, object, ratioy, ratiox);
+            frame = requestAnimationFrame(() => attractFn(transform0, object));
+        }
 
         //scope.scene.push('render');
         //import './test.js';

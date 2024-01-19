@@ -1,9 +1,18 @@
-import { log } from './log.js';
+
+import add        from '../../fn/modules/vector/add.js';
+import multiply   from '../../fn/modules/vector/multiply.js';
+import FlaggedSet from './flagged-set.js';
 import { link, unlink, purgeLinks } from '../tree/vertex.js';
 import { transformFromTranslation, transformFromRotation, multiplyMM, multiplyMP, invertMatrix, idTransform, transformFromPerspective, transformFromRotationY, normaliseW, flipZTransform, logVector } from './matrix.js';
+import { log } from './log.js';
+
 
 const assign = Object.assign;
 const linkProximity = 0.1;
+const selection = new FlaggedSet('selected');
+
+
+export default selection;
 
 export function deleteSelection() {
     // Find and delete vertices

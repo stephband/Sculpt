@@ -77,19 +77,22 @@ export default element('sculpt-scene', {
         }
     }
 }, {
-    /** camera="" **/
+    /**
+    camera=""
+    Watch out. This sets and gets two different things.
+    **/
 
     camera: {
         attribute: function(n) {
-            this.camera = parseInt(n);
+            this.camera = n;
         },
 
         get: function() {
-            return Internals(this).renderer.data.cameraIndex;
+            return Internals(this).renderer.data.camera;
         },
 
         set: function(n) {
-            Internals(this).camera.push(n);
+            Internals(this).camera.push(parseInt(n));
         }
     },
 
