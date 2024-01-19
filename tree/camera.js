@@ -6,6 +6,7 @@ import mix           from '../../fn/modules/mix.js';
 import noop          from '../../fn/modules/noop.js';
 import nothing       from '../../fn/modules/nothing.js';
 import overload      from '../../fn/modules/overload.js';
+import parseAngle    from '../../fn/modules/parse-angle.js';
 import { invertMatrix, multiplyMM, transformFromPerspective, idTransform, flipZTransform } from '../modules/matrix.js';
 import { group, groupEnd, log } from '../modules/log.js';
 import Node          from './node.js';
@@ -37,7 +38,7 @@ export default function Camera(transform, options) {
 
     // The new way
     this.projection = options.projection || defaults.projection;
-    this.fov        = options.fov    || defaults.fov;
+    this.fov        = parseAngle(options.fov || defaults.fov);
     this.aspect     = options.aspect || defaults.aspect;
     this.near       = options.near   || defaults.near;
     this.far        = options.far    || defaults.far;
