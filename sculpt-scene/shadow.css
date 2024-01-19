@@ -5,3 +5,7 @@
 
 @import '../../cruncher/classes/color.css';
 @import '../../cruncher/classes/text.css';
+
+svg {
+    stroke-width: 0px;
+}
