@@ -6,10 +6,13 @@ make it easy to mix islands of dynamically rendered content into static content.
 **/
 
 
+import equals           from '../../fn/modules/equals.js';
 import noop             from '../../fn/modules/noop.js';
 import matches          from '../../fn/modules/matches.js';
 import Stream           from '../../fn/modules/stream.js';
 import element, { getInternals as Internals } from '../../dom/modules/element.js';
+import events           from '../../dom/modules/events.js';
+import style            from '../../dom/modules/style.js';
 import requestData      from '../../literal/modules/request-data.js';
 import TemplateRenderer from '../../literal/modules/renderer-template.js';
 import print            from '../../literal/modules/scope/print.js';
@@ -57,6 +60,26 @@ export default element('sculpt-scene', {
             // Wait for render data, start rendering
             internals.datastream.each((data) => {
                 internals.status = 'active';
+
+                let viewbox = getComputedStyle(this).getPropertyValue('--viewbox');
+                if (viewbox) {
+                    viewbox = viewbox.split(/\s+/).map(Number);
+                    if (!equals(data.viewbox, viewbox)) {
+                        console.log('VB', viewbox);
+                        Data(data).viewbox = viewbox;
+                    }
+                }
+
+                events('resize', window).each(() => {
+                    let viewbox = getComputedStyle(this).getPropertyValue('--viewbox');
+                    if (viewbox) {
+                        viewbox = viewbox.split(/\s+/).map(Number);
+                        if (!equals(data.viewbox, viewbox)) {
+                            console.log('VB', viewbox);
+                            Data(data).viewbox = viewbox;
+                        }
+                    }
+                });
 
                 // Add camera to data
                 const camera = data.scene.findAll(matches({ type: 'camera'}))[data.cameraIndex];

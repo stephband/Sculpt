@@ -1,33 +1,11 @@
 <!DOCTYPE html>
-<!-- Literal template "/Users/stephband/Sites/cruncher/editor.html.literal" -->
+<!-- Literal template "/Users/stephband/Sites/cruncher.ch/cruncher4/static/sculptor/editor.html.literal" -->
 
 <html lang="en">
 <head>
-    <title>Cruncher</title>
+    undefined
 
-    <meta charset="utf-8" />
-    <meta name="author" content="Cruncher" />
-    <meta name="description" content="" />
-    <meta name="viewport" content="width=device-width" />
-
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:site" content="@cruncher">
-    <meta property="og:title" content="Cruncher" />
-    <meta property="og:description" content="" />
-    <meta property="og:image" content="https://cruncher.ch/cruncher/images/logo-512x512.png" />
-    <meta property="og:url" content="undefined" />
-
-    <script title="load">
-        window.DEBUG = true;
-        document.documentElement.className += ' js loading';
-        // window.addEventListener('DOMContentLoaded', () => document.documentElement.classList.remove('content-loading'));
-        // Wait for other load handlers to run first - Bolt does a few things on
-        // load (eg. targetable scrolls) and we want them to run before the loading
-        // class is removed
-        window.addEventListener('load', () => window.requestAnimationFrame(() => document.documentElement.classList.remove('loading')));
-    </script>
-
-    <script title="config">
+    <script title="site">
         window.slideshowStylesheet = 'https://stephen.band/slide-show/build/slide-show-shadow.css';
     </script>
 
@@ -39,7 +17,6 @@
         }
 
         .editor-grid {
-            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) calc(14rem + 5vw);
             overflow: hidden;
             padding: 0.25rem;
             column-gap: 0.25rem;
@@ -63,177 +40,42 @@
         .marked {
             marker-mid: url('#point-marker');
         }
-
-
-        .tag {
-            color: var(--slate-3);
-            background-color: var(--slate);
-            text-transform: none;
-        }
-
-        :checked + .tag {
-            color: var(--black);
-            background-color: var(--slate-4);
-        }
-
-        :checked + .tag + pre {
-            color: var(--slate-4);
-        }
-
-        .tag + label {
-            margin-top: 0;
-        }
-
-        .tag.x-end {
-            margin-right: 0.625rem;
-            margin-bottom: 0.375rem;
-        }
-
-        pre.x-end {
-            /* Right hand readout */
-            margin-right: 3rem;
-        }
-
-        circle {
-            stroke-width: 1.5px;
-        }
     </style>
-
-    <template id="pane-template" nostrict>
-        <svg class="${'x' + x} ${'y' + y}" viewBox="${ viewbox.join(' ') }" preserveAspectRatio="xMidYMid">
-            <use href="#grid" hidden="${ camera.projection !== 'orthographic' }"></use>
-            <g part="scene" data-renderer="${ DATA.camera.output.pipe(SVGSceneRenderer(element)) }" data-camera-index="${ i }"></g>
-            <g part="editor" data-renderer="${ DATA.camera.output.pipe(SVGSelectionRenderer(element)) }" data-camera-index="${ i }"></g>
-            <use href="#frame${ frame ? '-' + frame : '' }" hidden="${ camera.projection !== 'perspective' }"></use>
-        </svg>
-        <pre class="${'x' + x} ${'y' + y} x-start y-end">${ /* capitalise */ camera.projection[0].toUpperCase() + camera.projection.slice(1) }</pre>
-        <pre class="${'x' + x} ${'y' + y} x-center y-end">${ camera.projection === 'perspective' ? Math.round(deg(camera.fov)) + '°' : '' }</pre>
-        <input class="${'x' + x} ${'y' + y} invisible" type="radio" name="keyboard-target" value="${ DATA.camera.id }" id="keyboard-target-${ i }" />
-        <label class="tag ${'x' + x} ${'y' + y} x-end y-end" for="keyboard-target-${ i }">keys</label>
-        <pre class="${'x' + x} ${'y' + y} x-end y-end">${ camera.position[0].toFixed(0) + ', ' + camera.position[1].toFixed(0) + ', ' + camera.position[2].toFixed(0) }</pre>
-    </template>
-
-    <template id="data-template">
-        <label>Class</label>
-        <input type="text" name="data.class" value="${ data.data.class }" />
-        <label>Style</label>
-        <textarea type="text" name="data.class">${ data.data.style }</textarea>
-    </template>
-
-    <template id="object-selection-template" nostrict>
-        <label>id</label>
-        <input type="text" name="object.id" value="${ object.id }" />
-        <label>${ object.type === 'path' ? 'Vertices' : 'Children' }</label>
-        <input type="text" name="object.length" value="${ ((object) => { let n = -1; while(object[++n]); return n; })(object) }" readonly />
-        ${ object.data ? include('#data-template', { data: object.data }) : '' }
-    </template>
-
-    <template id="multiple-selection-template" nostrict>
-        <label>Objects</label>
-        <input type="text" name="object.length" value="${ objects.reduce((n, object) => n += (object.type !== 'vertex'), 0) }" readonly />
-        <label>Vertices</label>
-        <input type="text" name="object.length" value="${ objects.reduce((n, object) => n += (object.type === 'vertex'), 0) }" readonly />
-    </template>
 </head>
 
 <body class="2x-grid 2y-grid editor-grid grid">
-    <template is="literal-html" id="panes-template" src="./module.js" nostrict>
-    ${ events('change', body).each(delegate({
-        '[name=keyboard-target]': (input, e) => camera = scene.find(matches({ id: input.value }))
-    })) }
+    <svg class="x1 y1" viewBox="-30 -5 60 60" preserveAspectRatio="xMidYMid">
+        <g id="grid">
+            <!-- y lines -->
+            <line x1="-50" y1="-50" x2="50" y2="-50"></line>
+            <line x1="-50" y1="-40" x2="50" y2="-40"></line>
+            <line x1="-50" y1="-30" x2="50" y2="-30"></line>
+            <line x1="-50" y1="-20" x2="50" y2="-20"></line>
+            <line x1="-50" y1="-10" x2="50" y2="-10"></line>
+            <line x1="-60" y1="0"   x2="60" y2="0" class="black-fg"></line>
+            <line x1="-50" y1="10"  x2="50" y2="10"></line>
+            <line x1="-50" y1="20"  x2="50" y2="20"></line>
+            <line x1="-50" y1="30"  x2="50" y2="30"></line>
+            <line x1="-50" y1="40"  x2="50" y2="40"></line>
+            <line x1="-50" y1="50"  x2="50" y2="50"></line>
 
-    ${ [
-        { SVGSceneRenderer, SVGSelectionRenderer, x: 1, y: 1, camera: cameras[0], i: 0, viewbox: [-18, -15, 36, 36] },
-        { SVGSceneRenderer, SVGSelectionRenderer, x: 2, y: 1, camera: cameras[3], i: 3, viewbox: [-1.125, -1.125, 2.25, 2.25], frame: '1:1' },
-        { SVGSceneRenderer, SVGSelectionRenderer, x: 1, y: 2, camera: cameras[1], i: 1, viewbox: [-28, -18, 36, 36] },
-        { SVGSceneRenderer, SVGSelectionRenderer, x: 2, y: 2, camera: cameras[2], i: 2, viewbox: [-1.125, -1.125, 2.25, 2.25], frame: '1:1' }
-    ].map(include('#pane-template')) }
+            <!-- x lines -->
+            <line x1="-50" y1="-50" x2="-50" y2="50"></line>
+            <line x1="-40" y1="-50" x2="-40" y2="50"></line>
+            <line x1="-30" y1="-50" x2="-30" y2="50"></line>
+            <line x1="-20" y1="-50" x2="-20" y2="50"></line>
+            <line x1="-10" y1="-50" x2="-10" y2="50"></line>
+            <line x1="0"   y1="-60" x2="0"   y2="60" class="black-fg"></line>
+            <line x1="10"  y1="-50" x2="10"  y2="50"></line>
+            <line x1="20"  y1="-50" x2="20"  y2="50"></line>
+            <line x1="30"  y1="-50" x2="30"  y2="50"></line>
+            <line x1="40"  y1="-50" x2="40"  y2="50"></line>
+            <line x1="50"  y1="-50" x2="50"  y2="50"></line>
+        </g>
 
-    ${ requestAnimationFrame(() => scene.push('render')), '' }
-    </template>
+        <title>Cruncher</title>
 
-    <template is="literal-html" id="selection-pane-template" src="./module.js" nostrict>
-        <form class="x3 y1 2y selection-pane">
-            ${ selections.map(overload((selection) => selection.size, {
-                0: (selection) => 'No selection',
-
-                1: (selection) => include('#object-selection-template', {
-                    object: selection.values().next().value
-                }),
-
-                default: (selection) => include('#multiple-selection-template', {
-                    objects: Array.from(selection)
-                })
-            })) }
-        </form>
-    </template>
-
-    <svg hidden>
         <defs>
-            <g id="grid" class="black-fg">
-                <!-- y lines -->
-                <line x1="-50" y1="-50" x2="50" y2="-50"></line>
-                <line x1="-50" y1="-45" x2="50" y2="-45" opacity="0.5"></line>
-                <line x1="-50" y1="-40" x2="50" y2="-40"></line>
-                <line x1="-50" y1="-35" x2="50" y2="-35" opacity="0.5"></line>
-                <line x1="-50" y1="-30" x2="50" y2="-30"></line>
-                <line x1="-50" y1="-25" x2="50" y2="-25" opacity="0.5"></line>
-                <line x1="-50" y1="-20" x2="50" y2="-20"></line>
-                <line x1="-50" y1="-15" x2="50" y2="-15" opacity="0.5"></line>
-                <line x1="-50" y1="-10" x2="50" y2="-10"></line>
-                <line x1="-50" y1="-5"  x2="50" y2="-5" opacity="0.5"></line>
-                <line x1="-60" y1="0"   x2="60" y2="0"></line>
-                <line x1="-50" y1="5"   x2="50" y2="5" opacity="0.5"></line>
-                <line x1="-50" y1="10"  x2="50" y2="10"></line>
-                <line x1="-50" y1="15"  x2="50" y2="15" opacity="0.5"></line>
-                <line x1="-50" y1="20"  x2="50" y2="20"></line>
-                <line x1="-50" y1="25"  x2="50" y2="25" opacity="0.5"></line>
-                <line x1="-50" y1="30"  x2="50" y2="30"></line>
-                <line x1="-50" y1="35"  x2="50" y2="35" opacity="0.5"></line>
-                <line x1="-50" y1="40"  x2="50" y2="40"></line>
-                <line x1="-50" y1="45"  x2="50" y2="45" opacity="0.5"></line>
-                <line x1="-50" y1="50"  x2="50" y2="50"></line>
-
-                <!-- x lines -->
-                <line x1="-50" y1="-50" x2="-50" y2="50"></line>
-                <line x1="-45" y1="-50" x2="-45" y2="50" opacity="0.5"></line>
-                <line x1="-40" y1="-50" x2="-40" y2="50"></line>
-                <line x1="-35" y1="-50" x2="-35" y2="50" opacity="0.5"></line>
-                <line x1="-30" y1="-50" x2="-30" y2="50"></line>
-                <line x1="-25" y1="-50" x2="-25" y2="50" opacity="0.5"></line>
-                <line x1="-20" y1="-50" x2="-20" y2="50"></line>
-                <line x1="-15" y1="-50" x2="-15" y2="50" opacity="0.5"></line>
-                <line x1="-10" y1="-50" x2="-10" y2="50"></line>
-                <line x1="-5"  y1="-50" x2="-5"  y2="50" opacity="0.5"></line>
-                <line x1="0"   y1="-60" x2="0"   y2="60"></line>
-                <line x1="5"   y1="-50" x2="5"   y2="50" opacity="0.5"></line>
-                <line x1="10"  y1="-50" x2="10"  y2="50"></line>
-                <line x1="15"  y1="-50" x2="15"  y2="50" opacity="0.5"></line>
-                <line x1="20"  y1="-50" x2="20"  y2="50"></line>
-                <line x1="25"  y1="-50" x2="25"  y2="50" opacity="0.5"></line>
-                <line x1="30"  y1="-50" x2="30"  y2="50"></line>
-                <line x1="35"  y1="-50" x2="35"  y2="50" opacity="0.5"></line>
-                <line x1="40"  y1="-50" x2="40"  y2="50"></line>
-                <line x1="45"  y1="-50" x2="45"  y2="50" opacity="0.5"></line>
-                <line x1="50"  y1="-50" x2="50"  y2="50"></line>
-
-                <circle x="0" y="0" r="10" opacity="0.5"></circle>
-                <circle x="0" y="0" r="11.6666667" opacity="0.5"></circle>
-            </g>
-
-            <g id="frame">
-                <!-- 16:9 frame -->
-                <path class="slate-bg" style="opacity: 0.8;" d="M-20 -20 L20 -20 L20 20 L-20 20  M-1.777778 -1 L-1.777778 1 L1.777778 1 L1.777778 -1 Z"></path>
-            </g>
-
-            <g id="frame-16:9">
-                <path class="slate-bg" style="opacity: 0.8;" d="M-20 -20 L20 -20 L20 20 L-20 20  M-1.777778 -1 L-1.777778 1 L1.777778 1 L1.777778 -1 Z"></path>
-            </g>
-
-            <g id="frame-1:1">
-                <path class="slate-bg" style="opacity: 0.8;" d="M-20 -20 L20 -20 L20 20 L-20 20  M-1 -1 L-1 1 L1 1 L1 -1 Z"></path>
-            </g>
-
             <a xlink:href="/" style="opacity: 0.2;">
                 <g class="logo">
                     <polygon class="p1"  points="75,101.03 75,101.04 75,101.04 100,71.13 86.6,63.4"></polygon>
@@ -278,14 +120,50 @@
                 <circle class="black-bg fill" cx="4" cy="4" r="4"></circle>
             </marker>
         </defs>
+
+        <g part="scene"></g>
+        <g part="selection"></g>
     </svg>
 
-    <script type="module">
-        import '../literal/literal-html/module.js';
-        import scope from './module.js';
+    <svg class="x2 y1" viewBox="-56.25 -34.375 112.5 68.75" preserveAspectRatio="xMidYMid">
+        <!--use href="#grid"></use-->
+        <g part="scene"></g>
+        <g part="selection"></g>
+        <g>
+            <!-- 16:9 frame -->
+            <path class="slate-bg" style="opacity: 0.8;" d="M-600 -600 L600 -600 L600 600 L-600 600  M-50 -28.125 L-50 28.125 L50 28.125 L50 -28.125 Z"></path>
+        </g>
+    </svg>
 
-        //scope.scene.push('render');
-        //import './test.js';
+    <svg class="x1 y2" viewBox="-30 -30 60 60" preserveAspectRatio="xMidYMid">
+        <use href="#grid"></use>
+        <g part="scene"></g>
+        <g part="selection"></g>
+    </svg>
+
+    <svg class="x2 y2" viewBox="-55 -30 60 60" preserveAspectRatio="xMidYMid">
+        <use href="#grid"></use>
+        <g part="scene"></g>
+        <g part="selection"></g>
+    </svg>
+
+    <pre class="x1 y1 x-start y-end" id="readout-1-l"></pre>
+    <pre class="x2 y1 x-start y-end" id="readout-2-l"></pre>
+    <pre class="x1 y2 x-start y-end" id="readout-3-l"></pre>
+    <pre class="x2 y2 x-start y-end" id="readout-4-l"></pre>
+
+    <pre class="x1 y1 x-center y-end" id="readout-1-center"></pre>
+    <pre class="x2 y1 x-center y-end" id="readout-2-center"></pre>
+    <pre class="x1 y2 x-center y-end" id="readout-3-center"></pre>
+    <pre class="x2 y2 x-center y-end" id="readout-4-center"></pre>
+
+    <pre class="x1 y1 x-end y-end" id="readout-1"></pre>
+    <pre class="x2 y1 x-end y-end" id="readout-2"></pre>
+    <pre class="x1 y2 x-end y-end" id="readout-3"></pre>
+    <pre class="x2 y2 x-end y-end" id="readout-4"></pre>
+
+    <script type="module">
+        import './module.js';
     </script>
 </body>
 </html>
