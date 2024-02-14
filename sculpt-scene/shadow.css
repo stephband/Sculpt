@@ -7,6 +7,7 @@
 @import '../../cruncher/classes/text.css';
 
 svg {
-    stroke-width: 0px;
+    /* Just enough stroke to mask anti-aliased 'gaps' between shapes. */
+    stroke-width: 0.8;
     height: 100%;
 }
