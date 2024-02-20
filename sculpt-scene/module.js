@@ -55,7 +55,7 @@ export default element('sculpt-scene', {
 
     connect: function(shadow, internals) {
         const { datastream, renderer, sceneRenderer } = internals;
-
+console.log('CONNECT', this);
         if (!internals.status) {
             // Wait for render data, start rendering
             internals.datastream.each((data) => {
@@ -92,6 +92,7 @@ export default element('sculpt-scene', {
                 Data(data).camera = camera;
 
                 // Start the literal shadow renderer
+console.log('START RENDERER');
                 renderer.push(data);
 
                 // Start the SVG scene renderer from camera
@@ -112,7 +113,10 @@ export default element('sculpt-scene', {
         },
 
         get: function() {
-            return Internals(this).renderer.data.camera;
+            const internals = Internals(this);
+            return internals.status ?
+                internals.renderer.data.camera :
+                null ;
         },
 
         set: function(n) {
