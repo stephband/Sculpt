@@ -64,9 +64,9 @@ export default element('sculpt-scene', {
                 let viewbox = getComputedStyle(this).getPropertyValue('--viewbox');
                 if (viewbox) {
                     viewbox = viewbox.split(/\s+/).map(Number);
-console.log('VIEWBOX', viewbox, data.viewbox);
+//console.log('VIEWBOX', viewbox, data.viewbox);
                     if (!equals(data.viewbox, viewbox)) {
-console.log('VB', viewbox);
+//console.log('VB', viewbox);
                         Data(data).viewbox = viewbox;
                     }
                 }
@@ -76,7 +76,7 @@ console.log('VB', viewbox);
                     if (viewbox) {
                         viewbox = viewbox.split(/\s+/).map(Number);
                         if (!equals(data.viewbox, viewbox)) {
-                            console.log('VB', viewbox);
+//console.log('VB', viewbox);
                             Data(data).viewbox = viewbox;
                         }
                     }
