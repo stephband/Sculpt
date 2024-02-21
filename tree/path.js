@@ -38,6 +38,8 @@ assign(Path, {
 mix(Path.prototype, Object3D.prototype);
 
 assign(Path.prototype, {
+    type: 'path',
+
     getRenderables: function() {
         // Don't let path type collapse to vertex renderables, add them to
         // renderables directly

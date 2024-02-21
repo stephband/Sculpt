@@ -133,6 +133,8 @@ assign(Vertex, {
 mix(Vertex.prototype, Node.prototype);
 
 assign(Vertex.prototype, Node.prototpye, {
+    type: 'vertex',
+
     getSceneTransform: function() {
         return this.input.getSceneTransform();
     },

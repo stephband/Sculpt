@@ -33,6 +33,8 @@ assign(Scene, {
 mix(Scene.prototype, Object3D.prototype);
 
 assign(Scene.prototype, {
+    type: 'scene',
+
     changed: function() {
         // Notify change up the tree to renderers
         this.push('render');

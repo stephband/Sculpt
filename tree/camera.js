@@ -57,6 +57,8 @@ assign(Camera, {
 mix(Camera.prototype, Object3D.prototype);
 
 assign(Camera.prototype, {
+    type: 'camera',
+
     push: overload((type) => typeof type === 'string' ? type : type.type, {
         invalidate: function(event) {
             // Don't propagate - the output of this camera stream is renderables

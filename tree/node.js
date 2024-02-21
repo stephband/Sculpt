@@ -36,12 +36,6 @@ export default function Node() {
 }
 
 define(Node.prototype, {
-    type: {
-        get: function() {
-            return this.constructor.name.toLowerCase();
-        }
-    },
-
     position: {
         get: function() {
             return Privates(this).position;

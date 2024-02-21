@@ -35,4 +35,6 @@ assign(Group, {
 
 mix(Group.prototype, Object3D.prototype);
 
-assign(Group.prototype, {});
+assign(Group.prototype, {
+    type: 'group'
+});
